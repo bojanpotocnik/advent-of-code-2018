@@ -40,30 +40,77 @@ appears exactly three times. Multiplying these together produces a checksum of `
 What is the checksum for your list of box IDs?
 
 To begin, `get your puzzle input. <https://adventofcode.com/2018/day/2/input>`_ >> `input.txt`
+
+
+-- Part Two --
+
+Confident that your list of box IDs is complete, you're ready to find the boxes full of prototype fabric.
+
+The boxes will have IDs which differ by exactly one character at the same position in both strings.
+For example, given the following box IDs:
+
+    - `abcde`
+    - `fghij`
+    - `klmno`
+    - `pqrst`
+    - `fguij`
+    - `axcye`
+    - `wvxyz`
+
+The IDs abcde and axcye are close, but they differ by two characters (the second and fourth). However, the IDs `fghij`
+and `fguij` differ by exactly one character, the third (`h` and `u`). Those must be the correct boxes.
+
+What letters are common between the two correct box IDs? (In the example above, this is found by removing the differing
+character from either ID, producing `fgij`.)
 """
+
 import timing
 
 # The collections.Counter class could be used, however its advanced features are not required here
 # and only decrease the performance (it takes almost three times as long as the current solution).
 
+with open("input.txt") as f:
+    ids = [line.strip() for line in f]
+
+# region Part One
 counter_two: int = 0
 counter_three: int = 0
 
-with open("input.txt") as f:
-    for line in f:
-        char_counts = dict.fromkeys(line, 0)
-        # Count all of the chars first because of "... containing *exactly* two/three of any letter ..."
-        for c in line:
-            char_counts[c] += 1
-        # Check if there are any chars occurring exactly two or three times, but count each only once!
-        for c_count in char_counts.values():
-            if c_count == 2:
-                counter_two += 1
-                break
-        for c_count in char_counts.values():
-            if c_count == 3:
-                counter_three += 1
+for code in ids:
+    char_counts = dict.fromkeys(code, 0)
+    # Count all of the chars first because of "... containing *exactly* two/three of any letter ..."
+    for c in code:
+        char_counts[c] += 1
+    # Check if there are any chars occurring exactly two or three times, but count each only once!
+    # Two for-loops are faster (tested) than using booleans in single for loop.
+    for c_count in char_counts.values():
+        if c_count == 2:
+            counter_two += 1
+            break
+    for c_count in char_counts.values():
+        if c_count == 3:
+            counter_three += 1
 
 result = counter_two * counter_three
 
 print(f"Part 1 - Answer: {counter_two} * {counter_three} = [{result}] (took {timing.time_string()})")
+# endregion Part One
+
+# region Part Two
+timing.reset()
+
+common_chars: str = None
+
+for code_i, code in enumerate(ids):
+    for other_code in ids[code_i:]:  # All of the previous codes were once already compared.
+        # Save the indices of all chars which differs from the other code.
+        diffs = [i for i, c in enumerate(code) if (c != other_code[i])]
+        # The boxes will have IDs which differ by exactly one character at the same position in both strings.
+        if len(diffs) == 1:
+            common_chars = code[:diffs[0]] + code[diffs[0] + 1:]  # Take all of the chars except the different one.
+            # There are only two such boxes.
+            break
+
+print(f"Part 2 - Answer: [{common_chars}] (took {timing.time_string()})")
+
+# endregion Part Two
