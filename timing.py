@@ -3,10 +3,20 @@ from typing import Optional
 
 __author__ = "Bojan Potočnik"
 
-# The reference point of the value returned by `time.perf_counter()` is undefined,
-# so that only the difference between the results of consecutive calls is valid.
-# Execute the first call here to create an initial reference point when this module is imported.
-t0 = time.perf_counter()
+t0: float
+"""Time reference point for this module."""
+
+
+def reset() -> None:
+    """
+    The reference point of the value returned by `time.perf_counter()` is undefined,
+    so that only the difference between the results of consecutive calls is valid.
+    When this module is imported, the initial reference time point is marked and can
+    be reset using this function.
+    """
+    global t0
+
+    t0 = time.perf_counter()
 
 
 def time_string(start_time: float = None, end_time: Optional[float] = None) -> str:
@@ -63,3 +73,6 @@ def time_string(start_time: float = None, end_time: Optional[float] = None) -> s
         decimals = 3
 
     return f"{delta:.{decimals}f} {unit}"
+
+
+reset()
