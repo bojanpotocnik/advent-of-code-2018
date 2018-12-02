@@ -1,0 +1,10 @@
+# PyCharm
+.idea/advent-of-code-2018.iml
+.idea/deployment.xml
+.idea/misc.xml
+
+# PyCharm Plugins
+.idea/libraries/R_User_Library.xml
+
+# Python
+__pycache__
