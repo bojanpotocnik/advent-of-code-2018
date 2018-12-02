@@ -75,12 +75,12 @@ Here are other examples:
 What is the first frequency your device reaches twice?
 """
 import itertools
-from typing import List, Set
+from typing import Tuple, Set
 
 import timing
 
 with open("input.txt") as f:
-    changes: List[int] = [int(line) for line in f]
+    changes: Tuple[int] = tuple(map(int, f))
 
 print(f"Part 1 - Answer: [{sum(changes)}] (took {timing.time_string()})")
 
