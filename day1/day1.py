@@ -73,9 +73,6 @@ Here are other examples:
     - `+7, +7, -2, -7, -4` first reaches `14` twice.
 
 What is the first frequency your device reaches twice?
-
-Although it hasn't changed, you can still get your puzzle input.
-
 """
 import itertools
 from typing import List, Set
