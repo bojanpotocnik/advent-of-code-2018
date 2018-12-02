@@ -63,6 +63,7 @@ and `fguij` differ by exactly one character, the third (`h` and `u`). Those must
 What letters are common between the two correct box IDs? (In the example above, this is found by removing the differing
 character from either ID, producing `fgij`.)
 """
+import itertools
 
 import timing
 
@@ -73,6 +74,8 @@ with open("input.txt") as f:
     ids = [line.strip() for line in f]
 
 # region Part One
+timing.reset()
+
 counter_two: int = 0
 counter_three: int = 0
 
@@ -82,18 +85,13 @@ for code in ids:
     for c in code:
         char_counts[c] += 1
     # Check if there are any chars occurring exactly two or three times, but count each only once!
-    # Two for-loops are faster (tested) than using booleans in single for loop.
-    for c_count in char_counts.values():
-        if c_count == 2:
-            counter_two += 1
-            break
-    for c_count in char_counts.values():
-        if c_count == 3:
-            counter_three += 1
+    if 2 in char_counts.values():
+        counter_two += 1
+    if 3 in char_counts.values():
+        counter_three += 1
 
-result = counter_two * counter_three
-
-print(f"Part 1 - Answer: {counter_two} * {counter_three} = [{result}] (took {timing.time_string()})")
+print(f"Part 1 - Answer: {counter_two} * {counter_three} = [{counter_two * counter_three}]"
+      f" (took {timing.time_string()})")
 # endregion Part One
 
 # region Part Two
@@ -101,16 +99,14 @@ timing.reset()
 
 common_chars: str = None
 
-for code_i, code in enumerate(ids):
-    for other_code in ids[code_i:]:  # All of the previous codes were once already compared.
-        # Save the indices of all chars which differs from the other code.
-        diffs = [i for i, c in enumerate(code) if (c != other_code[i])]
-        # The boxes will have IDs which differ by exactly one character at the same position in both strings.
-        if len(diffs) == 1:
-            common_chars = code[:diffs[0]] + code[diffs[0] + 1:]  # Take all of the chars except the different one.
-            # There are only two such boxes.
-            break
+for code, other_code in itertools.combinations(ids, 2):
+    # Save the indices of all chars which differs from the other code.
+    diffs = [i for i, c in enumerate(code) if (c != other_code[i])]
+    # The boxes will have IDs which differ by exactly one character at the same position in both strings.
+    if len(diffs) == 1:
+        common_chars = code[:diffs[0]] + code[diffs[0] + 1:]  # Take all of the chars except the different one.
+        # There are only two such boxes.
+        break
 
 print(f"Part 2 - Answer: [{common_chars}] (took {timing.time_string()})")
-
 # endregion Part Two
